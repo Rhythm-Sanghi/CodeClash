@@ -6,15 +6,10 @@ import asyncio
 from typing import Dict
 from datetime import datetime
 import logging
-import sys
-from pathlib import Path
 
-backend_src = Path(__file__).parent / "backend" / "src"
-sys.path.insert(0, str(backend_src))
-
-from challenges.puzzle_library import get_challenge, CHALLENGES
-from services.matchmaking import matchmaking_system, BattleStatus
-from sandbox.sandbox_runner import execute_code
+from challenges import get_challenge, CHALLENGES
+from matchmaking import matchmaking_system, BattleStatus
+from sandbox import execute_code
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
