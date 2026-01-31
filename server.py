@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=['https://code-clash-aqi2.onrender.com'],
+    async_mode_threading_base_class=None,
     ping_timeout=60,
     ping_interval=25,
     logger=True,
