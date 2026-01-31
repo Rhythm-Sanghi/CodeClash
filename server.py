@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import socketio
 from contextlib import asynccontextmanager
 import asyncio
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=['https://code-clash-aqi2.onrender.com'],
+    cors_allowed_origins=[],
     ping_timeout=60,
     ping_interval=25,
     logger=True,
@@ -41,6 +42,16 @@ app = FastAPI(
 )
 
 app.mount("/socket.io", socketio.ASGIApp(sio))
+
+# Add CORS middleware for REST API endpoints only
+# This must come AFTER Socket.io mount to avoid interfering with Socket.io CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://code-clash-aqi2.onrender.com"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @sio.event
