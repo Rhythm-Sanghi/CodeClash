@@ -77,6 +77,12 @@ app.mount("/socket.io", socketio.ASGIApp(sio))
 # Socket.io Event Handlers
 # ============================================================================
 
+# Catch-all event handler for debugging
+@sio.on('*')
+async def catch_all(event, sid, data):
+    """Catch all events for debugging."""
+    logger.info(f"CATCH-ALL: Event '{event}' from {sid} with data: {data}")
+
 @sio.event
 async def connect(sid, environ):
     """Handle client connection."""
@@ -151,20 +157,24 @@ async def join_queue(sid, data):
     """
     try:
         user_id = data.get('user_id')
+        username = data.get('username')
+        elo_rating = data.get('elo_rating', 1000)
         challenge_id = data.get('challenge_id', 'palindrome')  # Default challenge
         
-        logger.info(f"join_queue event received - sid: {sid}, user_id: {user_id}, challenge_id: {challenge_id}")
-        logger.debug(f"socket_to_user mapping: {socket_to_user}")
+        logger.info(f"join_queue event received - sid: {sid}, user_id: {user_id}, username: {username}")
         logger.debug(f"connected_users keys: {list(connected_users.keys())}")
         
-        # Check if user_id is in connected_users
+        # If user not in connected_users, auto-register them (handles multi-instance scenario)
         if user_id not in connected_users:
-            # Try to find user by current socket
-            current_user_id = socket_to_user.get(sid)
-            logger.warning(f"User {user_id} not in connected_users. Socket {sid} is mapped to user {current_user_id}")
-            logger.warning(f"Registered users: {list(connected_users.keys())}")
-            await sio.emit('error', {'message': 'User not registered'}, to=sid)
-            return
+            logger.warning(f"User {user_id} not found in registry - auto-registering (likely multi-instance)")
+            connected_users[user_id] = {
+                'socket_id': sid,
+                'username': username or 'Anonymous',
+                'elo_rating': elo_rating,
+                'connected_at': datetime.utcnow().isoformat()
+            }
+            socket_to_user[sid] = user_id
+            logger.info(f"Auto-registered user: {user_id} ({username})")
         
         user_info = connected_users[user_id]
         

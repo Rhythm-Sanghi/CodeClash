@@ -64,6 +64,7 @@ export default function App() {
 
     // User registration response
     socketRef.current.on('user_registered', (data) => {
+      console.log('user_registered event received:', data)
       setIsRegistered(true)
       addNotification(`Welcome, ${data.username}!`)
     })
@@ -170,6 +171,7 @@ export default function App() {
     setUserId(newUserId)
     setIsLoggedIn(true)
 
+    console.log('Emitting register_user event:', { user_id: newUserId, username: username.trim() })
     socketRef.current.emit('register_user', {
       user_id: newUserId,
       username: username.trim(),
@@ -191,6 +193,8 @@ export default function App() {
 
     socketRef.current.emit('join_queue', {
       user_id: userId,
+      username: username,
+      elo_rating: 1000,
       challenge_id: selectedChallenge,
     })
   }
