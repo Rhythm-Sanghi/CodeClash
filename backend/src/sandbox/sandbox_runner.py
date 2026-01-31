@@ -92,10 +92,10 @@ for i, test_case in enumerate(test_cases):
         expected = test_case['expected']
         
         # Call user's function
-         if isinstance(input_data, tuple):
-             result = {function_name}(*input_data)
-         else:
-             result = {function_name}(input_data)
+        if isinstance(input_data, tuple):
+            result = {function_name}(*input_data)
+        else:
+            result = {function_name}(input_data)
         
         # Normalize results for comparison
         if result == expected:
@@ -154,8 +154,8 @@ def execute_code(user_code: str, test_cases: List[Dict[str, Any]],
         ExecutionResult with test execution details
     """
     
-    # Normalize line endings (Windows \r\n to Unix \n)
-    user_code = user_code.replace("\r\n", "\n")
+    # Normalize line endings (Windows \r\n and \r to Unix \n)
+    user_code = user_code.replace("\r\n", "\n").replace("\r", "\n")
     
     # Security check 1: Forbidden imports
     is_safe, error_msg = check_forbidden_imports(user_code)
@@ -218,13 +218,16 @@ def execute_code(user_code: str, test_cases: List[Dict[str, Any]],
                     execution_time=0.0  # Would need timeit for precise measurement
                 )
             except json.JSONDecodeError:
+                # Log the actual error for debugging
+                full_error = error if error else f"No JSON output. stdout: {output}"
+                print(f"DEBUG: Code execution failed. stderr: {error}, stdout: {output}", file=sys.stderr)
                 return ExecutionResult(
                     success=False,
                     passed_tests=0,
                     total_tests=len(test_cases),
                     test_results=[],
                     output=output,
-                    error=f"Invalid output format: {error}",
+                    error=f"Code execution error: {full_error}",
                     execution_time=0.0
                 )
         
