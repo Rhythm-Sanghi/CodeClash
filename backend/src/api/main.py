@@ -81,6 +81,7 @@ app.mount("/socket.io", socketio.ASGIApp(sio))
 async def connect(sid, environ):
     """Handle client connection."""
     logger.info(f"Client connected: {sid}")
+    logger.debug(f"Total connected: {len(socket_to_user)} users mapped, {len(connected_users)} users in registry")
     await sio.emit('connection_response', {'data': 'Connected to server'}, to=sid)
 
 
@@ -153,10 +154,15 @@ async def join_queue(sid, data):
         challenge_id = data.get('challenge_id', 'palindrome')  # Default challenge
         
         logger.info(f"join_queue event received - sid: {sid}, user_id: {user_id}, challenge_id: {challenge_id}")
-        logger.debug(f"Currently registered users: {list(connected_users.keys())}")
+        logger.debug(f"socket_to_user mapping: {socket_to_user}")
+        logger.debug(f"connected_users keys: {list(connected_users.keys())}")
         
+        # Check if user_id is in connected_users
         if user_id not in connected_users:
-            logger.warning(f"User {user_id} not registered. Registered users: {list(connected_users.keys())}")
+            # Try to find user by current socket
+            current_user_id = socket_to_user.get(sid)
+            logger.warning(f"User {user_id} not in connected_users. Socket {sid} is mapped to user {current_user_id}")
+            logger.warning(f"Registered users: {list(connected_users.keys())}")
             await sio.emit('error', {'message': 'User not registered'}, to=sid)
             return
         
