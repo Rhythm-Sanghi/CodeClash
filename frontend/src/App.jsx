@@ -144,7 +144,7 @@ export default function App() {
         socketRef.current.disconnect()
       }
     }
-  }, [userId])
+  }, [])
 
   // Fetch challenges on mount
   useEffect(() => {
