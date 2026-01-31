@@ -4,7 +4,15 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import './App.css'
 
-const API_URL = 'http://localhost:8000'
+const BACKEND_URL = "https://your-backend-name.onrender.com"
+
+const API_URL = window.location.hostname === "localhost"
+  ? "http://localhost:8000"
+  : BACKEND_URL
+
+const socketURL = window.location.hostname === "localhost"
+  ? "http://localhost:8000"
+  : BACKEND_URL
 
 export default function App() {
   const [userId, setUserId] = useState(null)
@@ -33,7 +41,7 @@ export default function App() {
   const [notifications, setNotifications] = useState([])
 
   useEffect(() => {
-    socketRef.current = io(API_URL, {
+    socketRef.current = io(socketURL, {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
