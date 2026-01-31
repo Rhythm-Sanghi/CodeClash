@@ -92,12 +92,10 @@ for i, test_case in enumerate(test_cases):
         expected = test_case['expected']
         
         # Call user's function
-        if isinstance(input_data, tuple):
-            result = {function_name}(*input_data)
-        elif isinstance(input_data, list):
-            result = {function_name}(*input_data)
-        else:
-            result = {function_name}(input_data)
+         if isinstance(input_data, tuple):
+             result = {function_name}(*input_data)
+         else:
+             result = {function_name}(input_data)
         
         # Normalize results for comparison
         if result == expected:
@@ -155,6 +153,9 @@ def execute_code(user_code: str, test_cases: List[Dict[str, Any]],
     Returns:
         ExecutionResult with test execution details
     """
+    
+    # Normalize line endings (Windows \r\n to Unix \n)
+    user_code = user_code.replace("\r\n", "\n")
     
     # Security check 1: Forbidden imports
     is_safe, error_msg = check_forbidden_imports(user_code)
