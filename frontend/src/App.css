@@ -1,0 +1,599 @@
+:root {
+  --primary-color: #6366f1;
+  --secondary-color: #8b5cf6;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --dark-bg: #0f172a;
+  --card-bg: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f36 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.app-header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-header p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  margin-bottom: 1rem;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger-color);
+}
+
+.status-indicator.connected {
+  background: var(--success-color);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Main content */
+.app-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+}
+
+.btn-secondary {
+  background: var(--text-secondary);
+  color: var(--dark-bg);
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-success {
+  background: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* Login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+}
+
+.login-card {
+  background: var(--card-bg);
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid var(--border-color);
+}
+
+.login-card h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.login-card button {
+  width: 100%;
+}
+
+/* Queue */
+.queue-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+}
+
+.queue-card {
+  background: var(--card-bg);
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  max-width: 500px;
+  border: 1px solid var(--border-color);
+}
+
+.queue-card h2 {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+}
+
+.queue-position {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.queue-rank {
+  font-size: 4rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.queue-label {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.queue-card button {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+/* Menu */
+.menu-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.menu-card {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.menu-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.challenge-select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.challenge-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.menu-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.menu-buttons button {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Challenges list */
+.challenges-list {
+  margin-top: 2rem;
+}
+
+.challenges-list h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.challenge-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.challenge-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.challenge-card.active {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.challenge-card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.difficulty {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-easy {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success-color);
+}
+
+.difficulty-medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--warning-color);
+}
+
+.difficulty-hard {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger-color);
+}
+
+.challenge-card p {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Battle */
+.battle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.battle-info {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1rem;
+}
+
+.player-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border-color);
+}
+
+.player-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.player-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.player-card-self .player-name {
+  color: var(--success-color);
+}
+
+.player-card-opponent .player-name {
+  color: var(--danger-color);
+}
+
+.test-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success-color), var(--primary-color));
+  transition: width 0.5s ease;
+}
+
+.test-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.challenge-info {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border-color);
+}
+
+.challenge-info h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.challenge-info p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.function-sig {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.75rem;
+  border-radius: 0.4rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Editor section */
+.editor-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.editor-container {
+  background: var(--card-bg);
+  border-radius: 0.8rem;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.editor-container h3 {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.opponent-editor {
+  opacity: 0.9;
+}
+
+/* Battle controls */
+.battle-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.battle-controls button {
+  min-width: 200px;
+}
+
+/* Battle result */
+.battle-result {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(99, 102, 241, 0.1));
+  border: 2px solid var(--success-color);
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.battle-result h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.result-message {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--success-color);
+}
+
+.battle-result button {
+  min-width: 200px;
+}
+
+/* Notifications */
+.notifications {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1000;
+}
+
+.notification {
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .battle-info {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .app-main {
+    padding: 1rem;
+  }
+
+  .challenge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card {
+    padding: 2rem;
+  }
+
+  .menu-buttons {
+    flex-direction: column;
+  }
+
+  .menu-buttons button {
+    max-width: 100%;
+  }
+}
