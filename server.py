@@ -41,10 +41,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.mount("/socket.io", socketio.ASGIApp(sio))
-
-# Add CORS middleware for REST API endpoints only
-# This must come AFTER Socket.io mount to avoid interfering with Socket.io CORS
+# Add CORS middleware FIRST (middleware order matters - first added = last executed)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://code-clash-aqi2.onrender.com"],
@@ -52,6 +49,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/socket.io", socketio.ASGIApp(sio))
 
 
 @sio.event
