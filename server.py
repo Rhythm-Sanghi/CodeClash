@@ -16,9 +16,11 @@ logger = logging.getLogger(__name__)
 
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins='*',
+    cors_allowed_origins=['*'],
     ping_timeout=60,
     ping_interval=25,
+    logger=True,
+    engineio_logger=True,
 )
 
 connected_users: Dict[str, dict] = {}
