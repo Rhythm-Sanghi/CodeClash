@@ -3,5 +3,6 @@ uvicorn[standard]==0.24.0
 python-socketio==5.9.0
 python-engineio==4.7.1
 aiofiles==23.2.1
-pydantic==2.5.0
+pydantic==2.5.3
+pydantic-core==2.14.6
 pydantic-settings==2.1.0
