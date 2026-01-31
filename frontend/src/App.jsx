@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import './App.css'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = 'https://codeclash-2txe.onrender.com'
 
 export default function App() {
   // User state
