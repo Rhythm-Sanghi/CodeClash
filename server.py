@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=['*'],
+    cors_allowed_origins=['https://code-clash-aqi2.onrender.com'],
     ping_timeout=60,
     ping_interval=25,
     logger=True,
@@ -41,6 +41,14 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://code-clash-aqi2.onrender.com"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.mount("/socket.io", socketio.ASGIApp(sio))
 
