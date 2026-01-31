@@ -48,101 +48,100 @@ export default function App() {
         reconnectionAttempts: 5,
       })
 
-      // Connection event handlers
+      // Connection event handlers - ONLY SET UP ONCE
       socketRef.current.on('connect', () => {
         setConnectionStatus('connected')
         console.log('Connected to server:', socketRef.current.id)
       })
+
+      socketRef.current.on('disconnect', () => {
+        setConnectionStatus('disconnected')
+        console.log('Disconnected from server')
+      })
+
+      socketRef.current.on('connection_response', (data) => {
+        console.log('Connection response:', data)
+      })
+
+      // User registration response
+      socketRef.current.on('user_registered', (data) => {
+        console.log('user_registered event received:', data)
+        setIsRegistered(true)
+        addNotification(`Welcome, ${data.username}!`)
+      })
+
+      // Queue events
+      socketRef.current.on('queue_joined', (data) => {
+        setInQueue(true)
+        setQueuePosition(data.queue_position)
+        addNotification(`Joined queue! Position: ${data.queue_position}`)
+      })
+
+      socketRef.current.on('queue_left', (data) => {
+        setInQueue(false)
+        setQueuePosition(null)
+        addNotification('Left the queue')
+      })
+
+      // Match found
+      socketRef.current.on('match_found', (data) => {
+        setRoomId(data.room_id)
+        setChallenge(data.challenge)
+        setOpponent(data.opponent)
+        setInQueue(false)
+        setInBattle(true)
+        setUserCode('')
+        setOpponentCode('')
+        setUserTestsPassed(0)
+        setOpponentTestsPassed(0)
+        setTotalTests(data.challenge.test_count)
+        setBattleResult(null)
+        addNotification(`Match found! Facing ${data.opponent.username}`)
+      })
+
+      // Code submission result
+      socketRef.current.on('code_submission', (data) => {
+        if (data.user_id === userId) {
+          setUserTestsPassed(data.passed_tests)
+        } else {
+          setOpponentTestsPassed(data.passed_tests)
+        }
+
+        addNotification(
+          `${data.user_id === userId ? 'You' : 'Opponent'}: ${data.passed_tests}/${data.total_tests} tests passed`
+        )
+
+        if (!data.success && data.error) {
+          addNotification(`Error: ${data.error}`)
+        }
+      })
+
+      // Opponent code sync
+      socketRef.current.on('opponent_code_update', (data) => {
+        setOpponentCode(data.code)
+      })
+
+      // Battle complete
+      socketRef.current.on('battle_complete', (data) => {
+        setBattleResult({
+          winner: data.winner_username,
+          winner_id: data.winner_id,
+          loser: data.loser_username,
+          message: data.message,
+        })
+        setInBattle(false)
+        addNotification(data.message)
+      })
+
+      // Error handling
+      socketRef.current.on('error', (data) => {
+        addNotification(`Error: ${data.message}`)
+      })
     }
 
-    socketRef.current.on('disconnect', () => {
-      setConnectionStatus('disconnected')
-      console.log('Disconnected from server')
-    })
-
-    socketRef.current.on('connection_response', (data) => {
-      console.log('Connection response:', data)
-    })
-
-    // User registration response
-    socketRef.current.on('user_registered', (data) => {
-      console.log('user_registered event received:', data)
-      setIsRegistered(true)
-      addNotification(`Welcome, ${data.username}!`)
-    })
-
-    // Queue events
-    socketRef.current.on('queue_joined', (data) => {
-      setInQueue(true)
-      setQueuePosition(data.queue_position)
-      addNotification(`Joined queue! Position: ${data.queue_position}`)
-    })
-
-    socketRef.current.on('queue_left', (data) => {
-      setInQueue(false)
-      setQueuePosition(null)
-      addNotification('Left the queue')
-    })
-
-    // Match found
-    socketRef.current.on('match_found', (data) => {
-      setRoomId(data.room_id)
-      setChallenge(data.challenge)
-      setOpponent(data.opponent)
-      setInQueue(false)
-      setInBattle(true)
-      setUserCode('')
-      setOpponentCode('')
-      setUserTestsPassed(0)
-      setOpponentTestsPassed(0)
-      setTotalTests(data.challenge.test_count)
-      setBattleResult(null)
-      addNotification(`Match found! Facing ${data.opponent.username}`)
-    })
-
-    // Code submission result
-    socketRef.current.on('code_submission', (data) => {
-      if (data.user_id === userId) {
-        setUserTestsPassed(data.passed_tests)
-      } else {
-        setOpponentTestsPassed(data.passed_tests)
-      }
-
-      addNotification(
-        `${data.user_id === userId ? 'You' : 'Opponent'}: ${data.passed_tests}/${data.total_tests} tests passed`
-      )
-
-      if (!data.success && data.error) {
-        addNotification(`Error: ${data.error}`)
-      }
-    })
-
-    // Opponent code sync
-    socketRef.current.on('opponent_code_update', (data) => {
-      setOpponentCode(data.code)
-    })
-
-    // Battle complete
-    socketRef.current.on('battle_complete', (data) => {
-      setBattleResult({
-        winner: data.winner_username,
-        winner_id: data.winner_id,
-        loser: data.loser_username,
-        message: data.message,
-      })
-      setInBattle(false)
-      addNotification(data.message)
-    })
-
-    // Error handling
-    socketRef.current.on('error', (data) => {
-      addNotification(`Error: ${data.message}`)
-    })
-
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-      }
+      // Don't disconnect on cleanup - only on component unmount
+      // This prevents the socket from disconnecting on every render
     }
   }, [])
 
