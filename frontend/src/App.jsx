@@ -169,12 +169,9 @@ export default function App() {
       return
     }
 
-    if (!socketRef.current || !socketRef.current.connected) {
-      console.error('Socket not connected:', {
-        socketExists: !!socketRef.current,
-        isConnected: socketRef.current?.connected
-      })
-      addNotification('Connecting to server... please try again')
+    if (!socketRef.current) {
+      console.error('Socket not initialized')
+      addNotification('Initializing connection...')
       return
     }
 
@@ -185,7 +182,8 @@ export default function App() {
     console.log('Emitting register_user event:', {
       user_id: newUserId,
       username: username.trim(),
-      socketId: socketRef.current.id
+      socketId: socketRef.current.id,
+      connected: socketRef.current.connected
     })
     socketRef.current.emit('register_user', {
       user_id: newUserId,
@@ -293,7 +291,7 @@ export default function App() {
                 onKeyPress={(e) => e.key === 'Enter' && handleRegister()}
               />
               <button onClick={handleRegister} className="btn btn-primary">
-                Join as Competitor
+                Join as Competitor ({connectionStatus})
               </button>
             </div>
           </div>
