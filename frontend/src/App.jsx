@@ -65,9 +65,16 @@ export default function App() {
 
       // User registration response
       socketRef.current.on('user_registered', (data) => {
-        console.log('user_registered event received:', data)
+        console.log('✅ user_registered event received:', data)
         setIsRegistered(true)
         addNotification(`Welcome, ${data.username}!`)
+      })
+      
+      // Catch if register_user fails to emit
+      socketRef.current.on('error', (data) => {
+        if (data.message && data.message.includes('register')) {
+          console.error('❌ Registration error:', data)
+        }
       })
 
       // Queue events
@@ -178,7 +185,7 @@ export default function App() {
     setUserId(newUserId)
     setIsLoggedIn(true)
 
-    console.log('Emitting register_user event:', {
+    console.log('📤 EMIT register_user event:', {
       user_id: newUserId,
       username: username.trim(),
       socketId: socketRef.current.id,
@@ -188,6 +195,8 @@ export default function App() {
       user_id: newUserId,
       username: username.trim(),
       elo_rating: 1000,
+    }, (ack) => {
+      console.log('📨 register_user acknowledgment:', ack)
     })
   }
 
