@@ -4,6 +4,15 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import './App.css'
 
+// Debounce utility function
+const debounce = (func, delay) => {
+  let timeoutId
+  return (...args) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func(...args), delay)
+  }
+}
+
 const API_URL = 'https://codeclash-2txe.onrender.com'
 
 export default function App() {
@@ -241,17 +250,22 @@ export default function App() {
     })
   }
 
-  // Sync code in real-time
+  // Sync code in real-time with debouncing (500ms delay to reduce network traffic)
+  const debouncedSyncCode = useRef(
+    debounce((code) => {
+      if (roomId && socketRef.current) {
+        socketRef.current.emit('sync_code', {
+          user_id: userId,
+          room_id: roomId,
+          code: code || '',
+        })
+      }
+    }, 500)
+  ).current
+
   const handleCodeChange = (value) => {
     setUserCode(value || '')
-
-    if (roomId && socketRef.current) {
-      socketRef.current.emit('sync_code', {
-        user_id: userId,
-        room_id: roomId,
-        code: value || '',
-      })
-    }
+    debouncedSyncCode(value)
   }
 
   // Add notification
