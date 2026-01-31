@@ -11,6 +11,7 @@ export default function App() {
   const [userId, setUserId] = useState(null)
   const [username, setUsername] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isRegistered, setIsRegistered] = useState(false)
 
   // Queue and battle state
   const [inQueue, setInQueue] = useState(false)
@@ -63,6 +64,7 @@ export default function App() {
 
     // User registration response
     socketRef.current.on('user_registered', (data) => {
+      setIsRegistered(true)
       addNotification(`Welcome, ${data.username}!`)
     })
 
@@ -182,6 +184,11 @@ export default function App() {
       return
     }
 
+    if (!isRegistered) {
+      addNotification('Waiting for registration to complete...')
+      return
+    }
+
     socketRef.current.emit('join_queue', {
       user_id: userId,
       challenge_id: selectedChallenge,
@@ -236,6 +243,7 @@ export default function App() {
     setIsLoggedIn(false)
     setUserId(null)
     setUsername('')
+    setIsRegistered(false)
     if (inQueue) handleLeaveQueue()
   }
 
