@@ -106,11 +106,21 @@ async def register_user(sid, data):
 async def join_queue(sid, data):
     try:
         user_id = data.get('user_id')
+        username = data.get('username')
+        elo_rating = data.get('elo_rating', 1000)
         challenge_id = data.get('challenge_id', 'palindrome')
 
+        # AUTO-RECOVERY: If user not in registry (server restart), auto-register them
         if user_id not in connected_users:
-            await sio.emit('error', {'message': 'User not registered'}, to=sid)
-            return
+            logger.warning(f"User {user_id} not in registry - auto-registering")
+            connected_users[user_id] = {
+                'socket_id': sid,
+                'username': username or 'Anonymous',
+                'elo_rating': elo_rating,
+                'connected_at': datetime.utcnow().isoformat()
+            }
+            socket_to_user[sid] = user_id
+            logger.info(f"Auto-registered user: {user_id} ({username})")
 
         user_info = connected_users[user_id]
 
