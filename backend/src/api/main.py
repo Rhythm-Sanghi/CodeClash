@@ -113,6 +113,7 @@ async def register_user(sid, data):
     """
     Register a user with the server.
     Expected data: {user_id, username, elo_rating (optional)}
+    Handles socket reconnections by updating socket_id if user already exists.
     """
     try:
         user_id = data.get('user_id')
@@ -126,7 +127,16 @@ async def register_user(sid, data):
             await sio.emit('error', {'message': 'Missing user_id or username'}, to=sid)
             return
         
-        # Register user
+        # Check if user already registered (socket reconnect scenario)
+        if user_id in connected_users:
+            old_sid = connected_users[user_id].get('socket_id')
+            logger.info(f"User {user_id} reconnected - updating socket from {old_sid} to {sid}")
+            # Remove old socket mapping
+            if old_sid in socket_to_user:
+                del socket_to_user[old_sid]
+        
+        # Register user - use user_id as primary key, not sid
+        # This ensures the user persists even if socket reconnects
         connected_users[user_id] = {
             'socket_id': sid,
             'username': username,
@@ -135,7 +145,7 @@ async def register_user(sid, data):
         }
         socket_to_user[sid] = user_id
         
-        logger.info(f"User registered successfully: {user_id} ({username}) - Total users: {len(connected_users)}")
+        logger.info(f"User registered successfully: {user_id} ({username}) on socket {sid} - Total users: {len(connected_users)}")
         logger.debug(f"Connected users: {list(connected_users.keys())}")
         
         await sio.emit('user_registered', {
