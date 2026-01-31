@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import './App.css'
 
-const BACKEND_URL = "https://your-backend-name.onrender.com"
+const BACKEND_URL = "https://codeclash-2txe.onrender.com"
 
 const API_URL = window.location.hostname === "localhost"
   ? "http://localhost:8000"
