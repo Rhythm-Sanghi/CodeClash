@@ -40,18 +40,20 @@ export default function App() {
 
   // Initialize Socket.io connection
   useEffect(() => {
-    socketRef.current = io(API_URL, {
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5,
-    })
+    if (!socketRef.current) {
+      socketRef.current = io(API_URL, {
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5,
+      })
 
-    // Connection event handlers
-    socketRef.current.on('connect', () => {
-      setConnectionStatus('connected')
-      console.log('Connected to server')
-    })
+      // Connection event handlers
+      socketRef.current.on('connect', () => {
+        setConnectionStatus('connected')
+        console.log('Connected to server:', socketRef.current.id)
+      })
+    }
 
     socketRef.current.on('disconnect', () => {
       setConnectionStatus('disconnected')
@@ -167,11 +169,24 @@ export default function App() {
       return
     }
 
+    if (!socketRef.current || !socketRef.current.connected) {
+      console.error('Socket not connected:', {
+        socketExists: !!socketRef.current,
+        isConnected: socketRef.current?.connected
+      })
+      addNotification('Connecting to server... please try again')
+      return
+    }
+
     const newUserId = `user_${Date.now()}`
     setUserId(newUserId)
     setIsLoggedIn(true)
 
-    console.log('Emitting register_user event:', { user_id: newUserId, username: username.trim() })
+    console.log('Emitting register_user event:', {
+      user_id: newUserId,
+      username: username.trim(),
+      socketId: socketRef.current.id
+    })
     socketRef.current.emit('register_user', {
       user_id: newUserId,
       username: username.trim(),
