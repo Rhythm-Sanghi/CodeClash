@@ -112,7 +112,10 @@ async def register_user(sid, data):
         username = data.get('username')
         elo_rating = data.get('elo_rating', 1000)
         
+        logger.info(f"register_user event received - sid: {sid}, user_id: {user_id}, username: {username}")
+        
         if not user_id or not username:
+            logger.warning(f"Missing required fields for registration - user_id: {user_id}, username: {username}")
             await sio.emit('error', {'message': 'Missing user_id or username'}, to=sid)
             return
         
@@ -125,16 +128,17 @@ async def register_user(sid, data):
         }
         socket_to_user[sid] = user_id
         
+        logger.info(f"User registered successfully: {user_id} ({username}) - Total users: {len(connected_users)}")
+        logger.debug(f"Connected users: {list(connected_users.keys())}")
+        
         await sio.emit('user_registered', {
             'user_id': user_id,
             'username': username,
             'message': 'User registered successfully'
         }, to=sid)
-        
-        logger.info(f"User registered: {user_id} ({username})")
     
     except Exception as e:
-        logger.error(f"Error in register_user: {e}")
+        logger.error(f"Error in register_user: {e}", exc_info=True)
         await sio.emit('error', {'message': str(e)}, to=sid)
 
 
@@ -148,7 +152,11 @@ async def join_queue(sid, data):
         user_id = data.get('user_id')
         challenge_id = data.get('challenge_id', 'palindrome')  # Default challenge
         
+        logger.info(f"join_queue event received - sid: {sid}, user_id: {user_id}, challenge_id: {challenge_id}")
+        logger.debug(f"Currently registered users: {list(connected_users.keys())}")
+        
         if user_id not in connected_users:
+            logger.warning(f"User {user_id} not registered. Registered users: {list(connected_users.keys())}")
             await sio.emit('error', {'message': 'User not registered'}, to=sid)
             return
         
