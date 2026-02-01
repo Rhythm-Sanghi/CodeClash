@@ -14,7 +14,7 @@ services:
     runtime: node
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    startCommand: npx serve -s dist -l 3000
+    startCommand: npx serve -s dist -l $PORT
     envVars:
       - key: NODE_ENV
         value: production
