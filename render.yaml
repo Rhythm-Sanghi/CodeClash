@@ -8,3 +8,12 @@ services:
     envVars:
       - key: PYTHONUNBUFFERED
         value: true
+
+  - type: static
+    name: codeclash-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_ENV
+        value: production
