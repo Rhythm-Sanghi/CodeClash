@@ -12,7 +12,7 @@ services:
   - type: static
     name: codeclash-frontend
     rootDir: frontend
-    buildCommand: npm ci && npm run build
+    buildCommand: bash ../render-build.sh
     staticPublishPath: ./dist
     envVars:
       - key: NODE_ENV
