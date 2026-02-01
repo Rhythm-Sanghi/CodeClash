@@ -9,12 +9,11 @@ services:
       - key: PYTHONUNBUFFERED
         value: true
 
-  - type: web
+  - type: static
     name: codeclash-frontend
-    runtime: node
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    startCommand: npx serve -s dist -l $PORT
+    staticPublishPath: ./dist
     envVars:
       - key: NODE_ENV
         value: production
