@@ -11,9 +11,9 @@ services:
 
   - type: static
     name: codeclash-frontend
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    rootDir: .
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
     envVars:
       - key: NODE_ENV
         value: production
